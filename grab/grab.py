@@ -1,14 +1,13 @@
-
+# This program should be called by cron
+# use `crontab -e` to add the rule.
+# I make it run every minute.
 import re
 import os
 import easyquotation
 from easyquotation.basequotation import BaseQuotation
 
-from pprint import pprint
-import pickle
-
 class MyQuotation(BaseQuotation):
-	"""新浪免费行情获取"""
+	# Extend easyquotation
 	max_num = 800
 	grep_detail = re.compile(r'(\d+)=([^\s][^,]+?)%s%s' % (r',([\.\d]+)' * 29, r',([-\.\d:]+)' * 2))
 	stock_api = 'http://hq.sinajs.cn/?format=text&list='
@@ -27,7 +26,10 @@ class MyQuotation(BaseQuotation):
 		return stock_dict
 
 def main():
+
+	# There will be 700M+ data every day, so make sure there is enough space.
 	path = '/home/liusida/code/stock/grab'
+	
 	quotation = MyQuotation()
 	a = quotation.all
 	for i,v in a.items():
@@ -46,12 +48,4 @@ def main():
 			with open(filename, 'a') as f:
 				print(line, file=f)
 			
-			#pprint(v)
-
-			
-
-	#with open('a','wb') as f:
-	#	pickle.dump(a,f)
-		
-
 main()
